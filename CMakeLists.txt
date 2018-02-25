@@ -158,6 +158,7 @@ elseif (BUILD_WINDOWS)
     set(compilertriplet VC-WIN64A)
     set(TARGET_BUILD ${TARGET_INSTALL_DIR}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/windows-x64)
     set(TARGET_PKG ${PACKAGE_NAME}-${PACKAGE_VERSION_PACKAGE}-windows-x64-)
+
     if (BUILD_TYPE STREQUAL "debug")
         set(compilertriplet debug-${compilertriplet})
         set(TARGET_BUILD ${TARGET_BUILD}dvc140typ0)
@@ -168,9 +169,8 @@ elseif (BUILD_WINDOWS)
     endif()
 
     add_custom_target(build_${PACKAGE_NAME}
-        COMMAND perl Configure ${compilertriplet} --debug no-asm  enable-ssl2 -DOPENSSL_CAPIENG_DIALOG --prefix=${TARGET_BUILD} --openssldir=${TARGET_BUILD}
+        COMMAND perl Configure ${compilertriplet} no-asm  enable-ssl2 -DOPENSSL_CAPIENG_DIALOG --prefix=${TARGET_BUILD} --openssldir=${TARGET_BUILD}
         COMMAND ms/do_win64a.bat
-        #COMMAND nmake -f ms/ntdll.mak vclean
         COMMAND nmake -f ms/ntdll.mak
         COMMAND nmake -f ms/ntdll.mak test
         COMMAND nmake -f ms/ntdll.mak install
@@ -181,7 +181,7 @@ endif()
 
 add_custom_target(package_${PACKAGE_NAME} ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory ${SOURCE_UPLOAD_DIR}
-    COMMAND ${CMAKE_COMMAND} -DTARGET=${SOURCE_UPLOAD_DIR}/${TARGET_PKG}.tgz -DSOURCE=${SOURCE_INSTALL_DIR}/${PACKAGE_NAME} -P ${tar_COMMAND}
+    COMMAND ${CMAKE_COMMAND} -DTARGET=${SOURCE_UPLOAD_DIR}/${TARGET_PKG}.tgz -DSOURCE=${TARGET_BUILD}/${PACKAGE_NAME} -P ${tar_COMMAND}
     DEPENDS build_${PACKAGE_NAME}
 )
 
