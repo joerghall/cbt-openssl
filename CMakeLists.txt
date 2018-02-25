@@ -30,7 +30,7 @@ else ()
     message(FATAL_ERROR "Unable to find buildtools, please check if the submodule is initialized")
 endif ()
 
-add_toolset(python2 2.7.14.43.rcd588a99 config=default )
+add_toolset(python2 2.7.14.49.re579c52b config=default )
 add_toolset(ninja 1.8.2.11.rc3e3b700 config=default )
 # add_toolset(pigz 1.8.2.7.r8fe061a4 config=default OVERRIDE_VERSION_WINDOWS=2.3.1)
 #https://h1grid.com/artifactory/cbt/tools/ninja/1.8.2.11.rc3e3b700/
