@@ -120,17 +120,21 @@ add_custom_target(unpack_${PACKAGE_NAME}
 if (BUILD_POSIX)
     if (BUILD_OSX)
         set(compilertriplet darwin64-x86_64-cc)
-        set(TARGET_BUILD ${TARGET_INSTALL_DIR}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/osx10.10-x64)
+        set(TARGET_BUILD ${TARGET_INSTALL_DIR}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/osx-x64-)
+        set(TARGET_PKG ${PACKAGE_NAME}-${PACKAGE_VERSION_PACKAGE}-osx-x64-10.10)
     elseif (BUILD_LINUX)
         set(compilertriplet linux-x86_64)
-        set(TARGET_BUILD ${TARGET_INSTALL_DIR}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/linux-x64)
+        set(TARGET_BUILD ${TARGET_INSTALL_DIR}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/linux-x64-)
+        set(TARGET_PKG ${PACKAGE_NAME}-${PACKAGE_VERSION_PACKAGE}-linux-x64-)
     endif ()
 
     if (BUILD_TYPE STREQUAL "debug")
         set(compilertriplet debug-${compilertriplet})
-        set(TARGET_BUILD ${TARGET_BUILD}-dtyp0)
+        set(TARGET_BUILD ${TARGET_BUILD}dtyp0)
+        set(TARGET_PKG ${TARGET_PKG}dtyp0)
     else ()
-        set(TARGET_BUILD ${TARGET_BUILD}-rtyp0)
+        set(TARGET_BUILD ${TARGET_BUILD}rtyp0)
+        set(TARGET_PKG ${TARGET_PKG}dtyp0)
     endif()
 
     #Configuring for
@@ -153,12 +157,14 @@ elseif (BUILD_WINDOWS)
 
     set(compilertriplet VC-WIN64A)
     set(TARGET_BUILD ${TARGET_INSTALL_DIR}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/windows-x64)
-
+    set(TARGET_PKG ${PACKAGE_NAME}-${PACKAGE_VERSION_PACKAGE}-windows-x64-)
     if (BUILD_TYPE STREQUAL "debug")
         set(compilertriplet debug-${compilertriplet})
-        set(TARGET_BUILD ${TARGET_BUILD}-dvc140typ0)
+        set(TARGET_BUILD ${TARGET_BUILD}dvc140typ0)
+        set(TARGET_PKG ${TARGET_PKG}rvc140typ0)
     else ()
-        set(TARGET_BUILD ${TARGET_BUILD}-rvc140typ0)
+        set(TARGET_BUILD ${TARGET_BUILD}rvc140typ0)
+        set(TARGET_PKG ${TARGET_PKG}rvc140typ0)
     endif()
 
     add_custom_target(build_${PACKAGE_NAME}
@@ -173,8 +179,14 @@ elseif (BUILD_WINDOWS)
     )
 endif()
 
+add_custom_target(package_${PACKAGE_NAME} ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${SOURCE_UPLOAD_DIR}
+    COMMAND ${CMAKE_COMMAND} -DTARGET=${SOURCE_UPLOAD_DIR}/${TARGET_PKG}.tgz -DSOURCE=${SOURCE_INSTALL_DIR}/${PACKAGE_NAME} -P ${tar_COMMAND}
+    DEPENDS build_${PACKAGE_NAME}
+)
+
 add_custom_target(publish_${PACKAGE_NAME}
-    COMMAND ${python2_BIN} ${upload_py_COMMAND} --file ${SOURCE_UPLOAD_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION_PACKAGE}-osx10.10-x64-debug.tgz --url ${PACKAGE_PUBLISH_URL}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/${PACKAGE_NAME}-${PACKAGE_VERSION_PACKAGE}-noarch.tgz
-    COMMAND ${python2_BIN} ${upload_py_COMMAND} --file ${SOURCE_UPLOAD_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION_PACKAGE}-osx10.10-x64-release.tgz --url ${PACKAGE_PUBLISH_URL}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/${PACKAGE_NAME}-${PACKAGE_VERSION_PACKAGE}-noarch.tgz
+    COMMAND ${python2_BIN} ${upload_py_COMMAND} --file ${SOURCE_UPLOAD_DIR}/${TARGET_PKG}.tgz --url ${PACKAGE_PUBLISH_URL}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/${TARGET_PKG}.tgz
+    COMMAND ${python2_BIN} ${upload_py_COMMAND} --file ${SOURCE_UPLOAD_DIR}/${TARGET_PKG}.tgz --url ${PACKAGE_PUBLISH_URL}/${PACKAGE_NAME}/${PACKAGE_VERSION_PACKAGE}/${TARGET_PKG}.tgz
     DEPENDS package_${PACKAGE_NAME}
 )
