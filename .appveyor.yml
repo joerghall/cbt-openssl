@@ -63,7 +63,7 @@ before_build:
 build_script:
   - mkdir build
   - cd build
-  - echo "Start setup %configuration% ..."
-  - cmake -G Ninja -DCMAKE_BUILD_TYPE=%configuration% ..
-  - echo "Start building %configuration5 ..."
+  - echo "Start setup $(configuration) ..."
+  - cmake -G Ninja -DCMAKE_BUILD_TYPE=$(configuration) ..
+  - echo "Start building $(configuration) ..."
   - cmake --build . --target publish_openssl
