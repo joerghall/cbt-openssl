@@ -30,6 +30,7 @@ configuration:
   - Debug
 platform:
   - x64
+
 environment:
   apiuser:
     secure: X+mtOycNJT0C+2uAY5eD3w==
@@ -63,7 +64,7 @@ before_build:
 build_script:
   - mkdir build
   - cd build
-  - echo "Start setup $(configuration) ..."
-  - cmake -G Ninja -DCMAKE_BUILD_TYPE=$(configuration) ..
-  - echo "Start building $(configuration) ..."
+  - echo "Start setup %CONFIGURATION% ..."
+  - cmake -G Ninja -DCMAKE_BUILD_TYPE=%CONFIGURATION% ..
+  - echo "Start building %CONFIGURATION% ..."
   - cmake --build . --target publish_openssl
