@@ -171,7 +171,7 @@ elseif (BUILD_WINDOWS)
     endif()
 
     add_custom_target(build_${PACKAGE_NAME}
-        COMMAND perl Configure ${compilertriplet} no-asm  enable-ssl2 /DEBUG -DOPENSSL_CAPIENG_DIALOG --prefix=${TARGET_BUILD} --openssldir=${TARGET_BUILD}
+        COMMAND perl Configure ${compilertriplet} no-asm  enable-ssl2 -DOPENSSL_CAPIENG_DIALOG --prefix=${TARGET_BUILD} --openssldir=${TARGET_BUILD}
         COMMAND ms/do_win64a.bat
         COMMAND nmake -f ms/ntdll.mak
         COMMAND nmake -f ms/ntdll.mak test
