@@ -176,9 +176,10 @@ elseif (BUILD_WINDOWS)
         COMMAND nmake -f ms/ntdll.mak
         COMMAND nmake -f ms/ntdll.mak test
         COMMAND nmake -f ms/ntdll.mak install
-        COMMAND ${CMAKE_COMMAND} -E copy ${SYMBOL_FOLDER}/openssl.pdb ${TARGET_BUILD}/bin/openssl.pdb
-        COMMAND ${CMAKE_COMMAND} -E copy ${SYMBOL_FOLDER}/libeay32.pdb ${TARGET_BUILD}/bin/libeay32.pdb
-        COMMAND ${CMAKE_COMMAND} -E copy ${SYMBOL_FOLDER}/ssleay32.pdb ${TARGET_BUILD}/bin/ssleay32.pdb
+        COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_BUILD}/${SYMBOL_FOLDER}/openssl.pdb ${TARGET_BUILD}/bin/openssl.pdb
+        COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_BUILD}/${SYMBOL_FOLDER}/libeay32.pdb ${TARGET_BUILD}/bin/libeay32.pdb
+        COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_BUILD}/${SYMBOL_FOLDER}/ssleay32.pdb ${TARGET_BUILD}/bin/ssleay32.pdb
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${TARGET_BUILD}/${SYMBOL_FOLDER}
         WORKING_DIRECTORY ${SOURCE_SRC_DIR}/openssl-OpenSSL_1_0_2n
         DEPENDS unpack_${PACKAGE_NAME}
     )
