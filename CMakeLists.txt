@@ -162,21 +162,27 @@ elseif (BUILD_WINDOWS)
     if (BUILD_DEBUG)
         set(compilertriplet debug-${compilertriplet})
         set(TARGET_BUILD ${TARGET_BUILD}dvc140typ0)
-        set(TARGET_PKG ${TARGET_PKG}rvc140typ0)
+        set(TARGET_PKG ${TARGET_PKG}dvc140typ0)
+        set(SYMBOL_FOLDER out32dll.dbg)
     else ()
         set(TARGET_BUILD ${TARGET_BUILD}rvc140typ0)
         set(TARGET_PKG ${TARGET_PKG}rvc140typ0)
+        set(SYMBOL_FOLDER out32dll)
     endif()
 
     add_custom_target(build_${PACKAGE_NAME}
-        COMMAND perl Configure ${compilertriplet} no-asm  enable-ssl2 -DOPENSSL_CAPIENG_DIALOG --prefix=${TARGET_BUILD} --openssldir=${TARGET_BUILD}
+        COMMAND perl Configure ${compilertriplet} no-asm  enable-ssl2 --debug -DOPENSSL_CAPIENG_DIALOG --prefix=${TARGET_BUILD} --openssldir=${TARGET_BUILD}
         COMMAND ms/do_win64a.bat
         COMMAND nmake -f ms/ntdll.mak
         COMMAND nmake -f ms/ntdll.mak test
         COMMAND nmake -f ms/ntdll.mak install
+        COMMAND ${CMAKE_COMMAND} -E copy_file ${SYMBOL_FOLDER}/openssl.pdb ${TARGET_BUILD}/${SYMBOL_FOLDER}/openssl.pdb
+        COMMAND ${CMAKE_COMMAND} -E copy_file ${SYMBOL_FOLDER}/libeay32.pdb ${TARGET_BUILD}/${SYMBOL_FOLDER}/libeay32.pdb
+        COMMAND ${CMAKE_COMMAND} -E copy_file ${SYMBOL_FOLDER}/ssleay32.pdb ${TARGET_BUILD}/${SYMBOL_FOLDER}/ssleay32.pdb
         WORKING_DIRECTORY ${SOURCE_SRC_DIR}/openssl-OpenSSL_1_0_2n
         DEPENDS unpack_${PACKAGE_NAME}
     )
+
 endif()
 
 add_custom_target(package_${PACKAGE_NAME} ALL
